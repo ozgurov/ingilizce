@@ -12,51 +12,61 @@ class ColorsPage extends StatelessWidget {
         'name': 'Red',
         'nameTR': 'Kırmızı',
         'color': Colors.red,
+        'imageAsset': 'assets/images/colors/red.png',
       },
       {
         'name': 'Blue',
         'nameTR': 'Mavi',
         'color': Colors.blue,
+        'imageAsset': 'assets/images/colors/blue.png',
       },
       {
         'name': 'Green',
         'nameTR': 'Yeşil',
         'color': Colors.green,
+        'imageAsset': 'assets/images/colors/green.png',
       },
       {
         'name': 'Yellow',
         'nameTR': 'Sarı',
         'color': Colors.yellow,
+        'imageAsset': 'assets/images/colors/yellow.png',
       },
       {
         'name': 'Purple',
         'nameTR': 'Mor',
         'color': Colors.purple,
+        'imageAsset': 'assets/images/colors/purple.png',
       },
       {
         'name': 'Orange',
         'nameTR': 'Turuncu',
         'color': Colors.orange,
+        'imageAsset': 'assets/images/colors/orange.png',
       },
       {
         'name': 'Pink',
         'nameTR': 'Pembe',
         'color': Colors.pink,
+        'imageAsset': 'assets/images/colors/pink.png',
       },
       {
         'name': 'Brown',
         'nameTR': 'Kahverengi',
         'color': Colors.brown,
+        'imageAsset': 'assets/images/colors/brown.png',
       },
       {
         'name': 'Black',
         'nameTR': 'Siyah',
         'color': Colors.black,
+        'imageAsset': 'assets/images/colors/black.png',
       },
       {
         'name': 'White',
         'nameTR': 'Beyaz',
         'color': Colors.white,
+        'imageAsset': 'assets/images/colors/white.png',
       },
     ];
 
@@ -88,52 +98,72 @@ class ColorsPage extends StatelessWidget {
                 _playColorSound(color['name'] as String);
               },
               borderRadius: BorderRadius.circular(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: color['color'] as Color,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Metin bilgileri için yarı-saydam arka plan
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Renk görseli tüm karta yayılacak
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      color['imageAsset'] as String,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Hata durumunda sadece renk göster
+                        return Container(
+                          color: color['color'] as Color,
+                        );
+                      },
+                    ),
+                  ),
+                  // Alt kısımda şeffaf gradient ve metin
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
+                        ),
                       ),
+                      padding: const EdgeInsets.all(12.0),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             color['name'] as String,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: (color['color'] as Color).computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             color['nameTR'] as String,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
-                              color: (color['color'] as Color).computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                              color: Colors.white,
                             ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.volume_up),
+                            color: Colors.white,
+                            onPressed: () {
+                              _playColorSound(color['name'] as String);
+                            },
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    IconButton(
-                      icon: const Icon(Icons.volume_up),
-                      color: (color['color'] as Color).computeLuminance() > 0.5 ? Colors.black : Colors.white,
-                      onPressed: () {
-                        _playColorSound(color['name'] as String);
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -146,7 +176,7 @@ class ColorsPage extends StatelessWidget {
   void _playColorSound(String colorName) async {
     // TTS servisini kullanarak renk adını seslendir
     final tts = TTSService();
-    await tts.speakEnglish(colorName);
+    await tts.speak(colorName);
     
     print('$colorName sesini TTS ile çal');
   }

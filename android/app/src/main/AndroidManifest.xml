@@ -4,7 +4,7 @@
     <!-- Ses izni -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
-        android:label="İngilizce Öğreniyorum"
+        android:label="AtxKids"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

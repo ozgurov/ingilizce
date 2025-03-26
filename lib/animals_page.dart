@@ -98,63 +98,77 @@ class AnimalsPage extends StatelessWidget {
                 _playAnimalSound(animal['name'] as String);
               },
               borderRadius: BorderRadius.circular(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(
-                    image: AssetImage(
-                      'assets/images/animals/${animal['name'].toString().toLowerCase()}.png',
-                    ),
-                    fit: BoxFit.cover,
-                    onError: (exception, stackTrace) {
-                      // Hata durumunda null döndürerek Container'ın arka plan rengini kullanmasını sağla
-                      return null;
-                    },
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Hayvan görseli tüm karta yayılacak
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.7),
-                      ],
-                      stops: const [0.6, 1.0],
+                    child: Image.asset(
+                      animal['imageAsset'] as String,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Hata durumunda simge göster
+                        return Container(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          child: Icon(
+                            Icons.pets,
+                            size: 60,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        animal['name'] as String,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  // Alt kısımda şeffaf gradient ve metin
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        animal['nameTR'] as String,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            animal['name'] as String,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            animal['nameTR'] as String,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.volume_up),
+                            color: Colors.white,
+                            onPressed: () {
+                              _playAnimalSound(animal['name'] as String);
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.volume_up),
-                        color: Colors.white,
-                        onPressed: () {
-                          _playAnimalSound(animal['name'] as String);
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
@@ -167,7 +181,7 @@ class AnimalsPage extends StatelessWidget {
   void _playAnimalSound(String animalName) async {
     // TTS servisini kullanarak hayvan adını seslendir
     final tts = TTSService();
-    await tts.speakEnglish(animalName);
+    await tts.speak(animalName);
     
     print('$animalName sesini TTS ile çal');
   }

@@ -9,54 +9,64 @@ class NumbersPage extends StatelessWidget {
     // Sayı listesi - İngilizce ve Türkçe adları
     final numbersList = [
       {
+        'number': 1,
         'name': 'One',
         'nameTR': 'Bir',
-        'number': 1,
+        'imageAsset': 'assets/images/numbers/one.png',
       },
       {
+        'number': 2,
         'name': 'Two',
         'nameTR': 'İki',
-        'number': 2,
+        'imageAsset': 'assets/images/numbers/two.png',
       },
       {
+        'number': 3,
         'name': 'Three',
         'nameTR': 'Üç',
-        'number': 3,
+        'imageAsset': 'assets/images/numbers/three.png',
       },
       {
+        'number': 4,
         'name': 'Four',
         'nameTR': 'Dört',
-        'number': 4,
+        'imageAsset': 'assets/images/numbers/four.png',
       },
       {
+        'number': 5,
         'name': 'Five',
         'nameTR': 'Beş',
-        'number': 5,
+        'imageAsset': 'assets/images/numbers/five.png',
       },
       {
+        'number': 6,
         'name': 'Six',
         'nameTR': 'Altı',
-        'number': 6,
+        'imageAsset': 'assets/images/numbers/six.png',
       },
       {
+        'number': 7,
         'name': 'Seven',
         'nameTR': 'Yedi',
-        'number': 7,
+        'imageAsset': 'assets/images/numbers/seven.png',
       },
       {
+        'number': 8,
         'name': 'Eight',
         'nameTR': 'Sekiz',
-        'number': 8,
+        'imageAsset': 'assets/images/numbers/eight.png',
       },
       {
+        'number': 9,
         'name': 'Nine',
         'nameTR': 'Dokuz',
-        'number': 9,
+        'imageAsset': 'assets/images/numbers/nine.png',
       },
       {
+        'number': 10,
         'name': 'Ten',
         'nameTR': 'On',
-        'number': 10,
+        'imageAsset': 'assets/images/numbers/ten.png',
       },
     ];
 
@@ -88,49 +98,80 @@ class NumbersPage extends StatelessWidget {
                 _playNumberSound(number['name'] as String);
               },
               borderRadius: BorderRadius.circular(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  // Sayı gösterimi için container
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                      shape: BoxShape.circle,
+                  // Sayı görseli tüm karta yayılacak
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      number['imageAsset'] as String,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Hata durumunda sayı göster
+                        return Container(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          child: Center(
+                            child: Text(
+                              '${number['number']}',
+                              style: TextStyle(
+                                fontSize: 90, 
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    child: Center(
-                      child: Text(
-                        (number['number'] as int).toString(),
-                        style: TextStyle(
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
+                  ),
+                  // Alt kısımda şeffaf gradient ve metin
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
                         ),
                       ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            number['name'] as String,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            number['nameTR'] as String,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.volume_up),
+                            color: Colors.white,
+                            onPressed: () {
+                              _playNumberSound(number['name'] as String);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    number['name'] as String,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    number['nameTR'] as String,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.volume_up),
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      _playNumberSound(number['name'] as String);
-                    },
                   ),
                 ],
               ),
@@ -145,7 +186,7 @@ class NumbersPage extends StatelessWidget {
   void _playNumberSound(String numberName) async {
     // TTS servisini kullanarak sayı adını seslendir
     final tts = TTSService();
-    await tts.speakEnglish(numberName);
+    await tts.speak(numberName);
     
     print('$numberName sesini TTS ile çal');
   }
