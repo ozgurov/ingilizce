@@ -1,0 +1,29 @@
+name: iOS Build Pipeline
+on:
+  push:
+    branches:
+      - main # Sadece main branch'ine push yapıldığında tetikle
+
+jobs:
+  build:
+    runs-on: macos-latest # macOS ortamı kullan
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Kodunuzu GitHub'dan çek
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2 # Flutter'ı kur
+        with:
+          channel: stable # Flutter'ın stabil sürümünü kullan
+
+      - name: Install Dependencies
+        run: flutter pub get # Bağımlılıkları yükle
+
+      - name: Build iOS
+        run: flutter build ios --release # iOS build'i al
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3 # IPA'yı kaydet
+        with:
+          name: iOS-IPA
+          path: build/ios/iphoneos/Runner.app
