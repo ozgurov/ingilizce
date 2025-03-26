@@ -2,7 +2,7 @@ name: iOS Build Pipeline
 on:
   push:
     branches:
-      - main # Sadece main branch'ine push yapıldığında tetikle
+      - master
 
 jobs:
   build:
