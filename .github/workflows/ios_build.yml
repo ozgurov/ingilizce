@@ -23,7 +23,7 @@ jobs:
         run: flutter build ios --release # iOS build'i al
 
       - name: Upload IPA
-        uses: actions/upload-artifact@v3 # IPA'yı kaydet
+        uses: actions/upload-artifact@v4 # IPA'yı kaydet
         with:
           name: iOS-IPA
           path: build/ios/iphoneos/Runner.app
